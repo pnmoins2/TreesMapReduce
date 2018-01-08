@@ -14,74 +14,74 @@ import org.apache.hadoop.io.IntWritable;
 
 public class TreeCountByType extends Configured implements Tool {
 
-    public int run(String[] args) throws Exception {
-    	if (args.length != 2) {
+        public int run(String[] args) throws Exception {
+                if (args.length != 2) {
 
-            System.out.println("Usage: [input] [output]");
+                    System.out.println("Usage: [input] [output]");
 
-            System.exit(-1);
+                    System.exit(-1);
 
-        }
-    	
-        // Création d'un job en lui fournissant la configuration et une description textuelle de la tâche
+                }
 
-        Job job = Job.getInstance(getConf());
+                // Création d'un job en lui fournissant la configuration et une description textuelle de la tâche
 
-        job.setJobName("TreeCountByType");
+                Job job = Job.getInstance(getConf());
 
-
-        // On précise les classes MyProgram, Map et Reduce
-
-        job.setJarByClass(TreeCountByType.class);
-
-        job.setMapperClass(TreeCountByTypeMapper.class);
-
-        job.setReducerClass(TreeCountByTypeReducer.class);
+                job.setJobName("TreeCountByType");
 
 
-        // Définition des types clé/valeur de notre problème
+                // On précise les classes MyProgram, Map et Reduce
 
-        job.setMapOutputKeyClass(Text.class);
+                job.setJarByClass(TreeCountByType.class);
 
-        job.setMapOutputValueClass(IntWritable.class);
+                job.setMapperClass(TreeCountByTypeMapper.class);
 
-
-        job.setOutputKeyClass(Text.class);
-
-        job.setOutputValueClass(IntWritable.class);
+                job.setReducerClass(TreeCountByTypeReducer.class);
 
 
-        // Définition des fichiers d'entrée et de sorties (ici considérés comme des arguments à préciser lors de l'exécution)
+                // Définition des types clé/valeur de notre problème
 
-        String commaSeparatedPaths = args[0];
-    	FileInputFormat.addInputPaths(job, commaSeparatedPaths);
+                job.setMapOutputKeyClass(Text.class);
+
+                job.setMapOutputValueClass(IntWritable.class);
+
+
+                job.setOutputKeyClass(Text.class);
+
+                job.setOutputValueClass(IntWritable.class);
+
+
+                // Définition des fichiers d'entrée et de sorties (ici considérés comme des arguments à préciser lors de l'exécution)
+
+                String commaSeparatedPaths = args[0];
+                FileInputFormat.addInputPaths(job, commaSeparatedPaths);
+
+                Path outputFilePath = new Path(args[1]);
+                FileOutputFormat.setOutputPath(job, outputFilePath);
+
+
+                //Suppression du fichier de sortie s'il existe déjà
+
+                FileSystem fs = FileSystem.newInstance(getConf());
+
+                if (fs.exists(outputFilePath)) {
+                    fs.delete(outputFilePath, true);
+                }
+
+
+                return job.waitForCompletion(true) ? 0: 1;
         
-        Path outputFilePath = new Path(args[1]);
-        FileOutputFormat.setOutputPath(job, outputFilePath);
-
-
-        //Suppression du fichier de sortie s'il existe déjà
-
-        FileSystem fs = FileSystem.newInstance(getConf());
-
-        if (fs.exists(outputFilePath)) {
-            fs.delete(outputFilePath, true);
         }
 
 
-        return job.waitForCompletion(true) ? 0: 1;
+        public static void main(String[] args) throws Exception {
 
-    }
+                TreeCountByType treeCountByTypeDriver = new TreeCountByType();
 
+                int res = ToolRunner.run(treeCountByTypeDriver, args);
 
-    public static void main(String[] args) throws Exception {
+                System.exit(res);
 
-        TreeCountByType treeCountByTypeDriver = new TreeCountByType();
-
-        int res = ToolRunner.run(treeCountByTypeDriver, args);
-
-        System.exit(res);
-
-    }
+        }
 
 }
