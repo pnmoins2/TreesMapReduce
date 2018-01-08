@@ -13,7 +13,7 @@ public class TreeCountByTypeMapper extends Mapper<LongWritable, Text, Text, IntW
 	// Output : (treeType, 1) 
 	@Override
 	protected void map(LongWritable keyE, Text valE, Context context) throws IOException,InterruptedException
-    {
+    	{
 		// The first line of the the input file has no relevant information
 		if (keyE.get() != 0)
 		{
@@ -21,10 +21,10 @@ public class TreeCountByTypeMapper extends Mapper<LongWritable, Text, Text, IntW
 			String[] lineSplit = valE.toString().split(";");
 	        
 			// Recover the tree type
-	        typeTree.set(lineSplit[2]);
-	        
-	        // Output
-	        context.write(typeTree, one);
+			typeTree.set(lineSplit[2]);
+
+			// Output
+			context.write(typeTree, one);
 		}     
-    }
+    	}
 }
