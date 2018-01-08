@@ -13,74 +13,74 @@ import org.apache.hadoop.io.Text;
 
 public class BoroughOldestTree extends Configured implements Tool {
 
-    public int run(String[] args) throws Exception {
-    	if (args.length != 2) {
+        public int run(String[] args) throws Exception {
+                if (args.length != 2) {
 
-            System.out.println("Usage: [input] [output]");
+                    System.out.println("Usage: [input] [output]");
 
-            System.exit(-1);
+                    System.exit(-1);
 
-        }
+                }
     	
-        // Création d'un job en lui fournissant la configuration et une description textuelle de la tâche
+                // Création d'un job en lui fournissant la configuration et une description textuelle de la tâche
 
-        Job job = Job.getInstance(getConf());
+                Job job = Job.getInstance(getConf());
 
-        job.setJobName("BoroughOldestTree");
-
-
-        // On précise les classes MyProgram, Map et Reduce
-
-        job.setJarByClass(BoroughOldestTree.class);
-
-        job.setMapperClass(BoroughOldestTreeMapper.class);
-
-        job.setReducerClass(BoroughOldestTreeReducer.class);
+                job.setJobName("BoroughOldestTree");
 
 
-        // Définition des types clé/valeur de notre problème
+                // On précise les classes MyProgram, Map et Reduce
 
-        job.setMapOutputKeyClass(Text.class);
+                job.setJarByClass(BoroughOldestTree.class);
 
-        job.setMapOutputValueClass(Text.class);
+                job.setMapperClass(BoroughOldestTreeMapper.class);
 
-
-        job.setOutputKeyClass(Text.class);
-
-        job.setOutputValueClass(Text.class);
+                job.setReducerClass(BoroughOldestTreeReducer.class);
 
 
-        // Définition des fichiers d'entrée et de sorties (ici considérés comme des arguments à préciser lors de l'exécution)
+                // Définition des types clé/valeur de notre problème
 
-        String commaSeparatedPaths = args[0];
-    	FileInputFormat.addInputPaths(job, commaSeparatedPaths);
-        
-        Path outputFilePath = new Path(args[1]);
-        FileOutputFormat.setOutputPath(job, outputFilePath);
+                job.setMapOutputKeyClass(Text.class);
+
+                job.setMapOutputValueClass(Text.class);
 
 
-        //Suppression du fichier de sortie s'il existe déjà
+                job.setOutputKeyClass(Text.class);
 
-        FileSystem fs = FileSystem.newInstance(getConf());
+                job.setOutputValueClass(Text.class);
 
-        if (fs.exists(outputFilePath)) {
-            fs.delete(outputFilePath, true);
+
+                // Définition des fichiers d'entrée et de sorties (ici considérés comme des arguments à préciser lors de l'exécution)
+
+                String commaSeparatedPaths = args[0];
+                FileInputFormat.addInputPaths(job, commaSeparatedPaths);
+
+                Path outputFilePath = new Path(args[1]);
+                FileOutputFormat.setOutputPath(job, outputFilePath);
+
+
+                //Suppression du fichier de sortie s'il existe déjà
+
+                FileSystem fs = FileSystem.newInstance(getConf());
+
+                if (fs.exists(outputFilePath)) {
+                    fs.delete(outputFilePath, true);
+                }
+
+
+                return job.waitForCompletion(true) ? 0: 1;
+
         }
 
 
-        return job.waitForCompletion(true) ? 0: 1;
+        public static void main(String[] args) throws Exception {
 
-    }
+                BoroughOldestTree bouroughOldestTreeDriver = new BoroughOldestTree();
 
+                int res = ToolRunner.run(bouroughOldestTreeDriver, args);
 
-    public static void main(String[] args) throws Exception {
+                System.exit(res);
 
-        BoroughOldestTree bouroughOldestTreeDriver = new BoroughOldestTree();
-
-        int res = ToolRunner.run(bouroughOldestTreeDriver, args);
-
-        System.exit(res);
-
-    }
+        }
 
 }
