@@ -8,3 +8,6 @@ Pour pouvoir exécuter chaque job, il faut exporter ce projet en .jar puis rentr
 "hadoop jar /path/to/file.jar cs.Lab2.Job.Job /path/to/arbres.csv /path/to/output"
 
 où les chemins sont en absolus et où Job correspond à l'un des sous-packages
+
+Valentin GRASSET
+Paul WAMBERGUE
